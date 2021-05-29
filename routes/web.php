@@ -2,6 +2,8 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -13,6 +15,11 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+Route::group(['prefix' => 'api'], function () {
+    Route::group(['middleware' => 'auth'], function () {
+        require __DIR__ . '/Auth/api.php';
+        require __DIR__ . '/User/api.php';
+        require __DIR__ . '/PersonUser/api.php';
+        require __DIR__ . '/CorporateUser/api.php';
+    });
 });
