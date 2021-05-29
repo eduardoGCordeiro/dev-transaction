@@ -14,6 +14,15 @@ class AuthController extends Controller
        'email' => 'required|email|max:255',
     ];
 
+    private function respondWithToken(string $token)
+    {
+        return response()->json([
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => Auth::factory()->getTTL() * 60
+        ], 200);
+    }
+
     public function login(Request $request)
     {
         $this->validate($request, self::RULES);
@@ -24,21 +33,17 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid email/password'], 401);
         }
 
-        return response()->json([
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
-        ], 200);
+        return $this->respondWithToken($token);
     }
 
     public function logout()
     {
-        auth()->logout();
-        return response()->json(['message' => 'User successfully signed out']);
+        Auth::logout();
+        return response()->json(['message' => 'User successfully signed out'], 200);
     }
 
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(Auth::refresh());
     }
 }
