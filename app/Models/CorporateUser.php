@@ -18,5 +18,6 @@ class CorporateUser extends Model
      */
     protected $fillable = [
         'cnpj',
+        'user_id'
     ];
 }

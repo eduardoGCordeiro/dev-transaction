@@ -18,5 +18,6 @@ class PersonUser extends Model
      */
     protected $fillable = [
         'cpf',
+        'user_id'
     ];
 }

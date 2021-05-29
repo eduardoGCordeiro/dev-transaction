@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Ramsey\Uuid\Uuid;
+use App\Models\PersonUser;
+use App\Models\CorporateUser;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
@@ -16,12 +19,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     use Authorizable;
     use HasFactory;
 
+    public $incrementing = false;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
+        'id',
         'name',
         'email'
     ];
@@ -34,6 +40,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->id = Uuid::uuid4();
+        });
+    }
 
     /**
      * Retrieve the identifier for the JWT key.
@@ -52,5 +66,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function specialization()
+    {
+        return $this->hasOneThrough(PersonUser::class, CorporateUser::class, 'user_id', 'user_id');
     }
 }

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix' => 'person_user',
+    'prefix' => 'user',
 ], function () {
-
+    Route::post('/register', 'UserController@register');
 });
