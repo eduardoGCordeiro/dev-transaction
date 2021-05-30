@@ -80,6 +80,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
     }
 
+    public function person()
+    {
+        return $this->hasOne(PersonUser::class);
+    }
+
+    public function corporate()
+    {
+        return $this->hasOne(CorporateUser::class);
+    }
+
     public function wallet()
     {
         return $this->hasOne(Wallet::class);

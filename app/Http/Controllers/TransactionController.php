@@ -3,26 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Rules\CheckBalancePayer;
+use App\Rules\PayerUserType;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-
-    private const RULES = [
-        'value' => 'required|float',
-        'payer_wallet_id' => 'required|max:255',
-        'payee_wallet_id' => 'required|email|max:255',
-    ];
-
-    public function income(Request $request)
-    {
-        return response()->json(['message' => 'Invalid email/password'], 401);
-    }
-
     public function outcome(Request $request)
     {
-        Auth::logout();
-        return response()->json(['message' => 'User successfully signed out'], 200);
+        $this->validate($request, [
+            'value' => [
+                'required',
+                'numeric',
+                new CheckBalancePayer($request->all())
+            ],
+            'payee_wallet_id' => 'required|max:255|exists:wallets,id',
+            'payer_wallet_id' => [
+                'required',
+                'max:255',
+                'exists:wallets,id',
+                new PayerUserType()
+            ]
+        ]);
+
+        return response()->json(['message' => 'Transaction complete with success!'], 200);
     }
 }
