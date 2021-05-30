@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Ramsey\Uuid\Uuid;
+use App\Models\Wallet;
 use App\Models\PersonUser;
 use App\Models\CorporateUser;
 
@@ -71,5 +72,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function specialization()
     {
         return $this->hasOneThrough(PersonUser::class, CorporateUser::class, 'user_id', 'user_id');
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
     }
 }

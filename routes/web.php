@@ -26,5 +26,6 @@ Route::group(['prefix' => 'api'], function () {
         require __DIR__ . '/User/api-authenticated.php';
         require __DIR__ . '/PersonUser/api.php';
         require __DIR__ . '/CorporateUser/api.php';
+        require __DIR__ . '/Transaction/api.php';
     });
 });
