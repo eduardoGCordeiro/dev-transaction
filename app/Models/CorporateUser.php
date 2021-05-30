@@ -20,4 +20,19 @@ class CorporateUser extends Model
         'cnpj',
         'user_id'
     ];
+
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'id',
+        'user_id'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

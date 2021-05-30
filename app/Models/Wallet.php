@@ -24,6 +24,15 @@ class Wallet extends Model
         'balance',
     ];
 
+        /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'user_id',
+    ];
+
     public static function boot()
     {
         parent::boot();

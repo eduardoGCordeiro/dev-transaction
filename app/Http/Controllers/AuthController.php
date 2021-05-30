@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Resources\AuthResource;
 
 class AuthController extends Controller
 {
@@ -13,15 +14,6 @@ class AuthController extends Controller
        'password' => 'required|string|max:255',
        'email' => 'required|email|max:255',
     ];
-
-    private function respondWithToken(string $token)
-    {
-        return response()->json([
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
-        ], 200);
-    }
 
     public function login(Request $request)
     {
@@ -33,7 +25,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid email/password'], 401);
         }
 
-        return $this->respondWithToken($token);
+        return response()->json(new AuthResource($token), 200);
     }
 
     public function logout()
@@ -44,6 +36,6 @@ class AuthController extends Controller
 
     public function refresh()
     {
-        return $this->respondWithToken(Auth::refresh());
+        return response()->json(new AuthResource(Auth::refresh()), 200);
     }
 }

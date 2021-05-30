@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Models\PersonUser;
 use App\Models\CorporateUser;
-use Illuminate\Support\Facades\DB;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -34,21 +36,25 @@ class UserController extends Controller
             $user->password = Hash::make($request->input('password'));
             $user->save();
 
-            if ($request->input('document_type') == 'cpf') {
+            if ($request->input('document_type') === 'cpf') {
                 $specialization = new PersonUser();
                 $specialization->cpf = $request->input('cpf');
             }
 
-            if ($request->input('document_type') == 'cnpj') {
+            if ($request->input('document_type') === 'cnpj') {
                 $specialization = new CorporateUser();
-                $specialization->cpf = $request->input('cnpj');
+                $specialization->cnpj = $request->input('cnpj');
             }
 
             $specialization->user_id = $user->id;
             $specialization->save();
 
+            $wallet = new Wallet();
+            $wallet->user_id = $user->id;
+            $wallet->save();
+
             DB::commit();
-            return response()->json(['user' => $user->with('specialization'), 'message' => 'User created!'], 201);
+            return response()->json(['user' => new UserResource($user), 'message' => 'User created!'], 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'User Registration Failed!'], 500);
