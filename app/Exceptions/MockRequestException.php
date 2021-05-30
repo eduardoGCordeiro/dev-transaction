@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class MockTransactionException extends Exception
+class MockRequestException extends Exception
 {
     //
 }

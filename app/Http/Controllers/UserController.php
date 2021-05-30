@@ -11,6 +11,8 @@ use App\Models\Wallet;
 use App\Models\PersonUser;
 use App\Models\CorporateUser;
 use App\Http\Resources\UserResource;
+use App\Providers\MockRequestServiceProvider;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -55,8 +57,13 @@ class UserController extends Controller
 
             DB::commit();
             return response()->json(['user' => new UserResource($user), 'message' => 'User created!'], 201);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             DB::rollBack();
+
+            Log::critical('[User error]', [
+                'message' => $exception->getMessage()
+            ]);
+
             return response()->json(['message' => 'User Registration Failed!'], 500);
         }
     }
