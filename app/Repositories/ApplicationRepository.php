@@ -19,8 +19,6 @@ class ApplicationRepository
             return $this->saveApplication();
         } catch (ApplicationException $exception) {
             throw new ApplicationRepositoryException($exception->getMessage(), 422);
-        } catch (\Exception $exception) {
-            throw new ApplicationRepositoryException($exception->getMessage(), 500);
         }
     }
 

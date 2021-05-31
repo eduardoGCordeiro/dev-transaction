@@ -20,7 +20,7 @@ class TransactionRepository
         $this->mock_provider = new MockRequestServiceProvider();
     }
 
-    public function handle(object $data): Transaction
+    public function makeTransaction(object $data): Transaction
     {
         try {
             $this->data = (object) $data;
@@ -35,7 +35,7 @@ class TransactionRepository
                 throw new TransactionException('Insufficient balance to complete the transaction!');
             }
 
-            return $this->makeTransaction();
+            return $this->saveTransaction();
         } catch (TransactionException $exception) {
             throw new TransactionRepositoryException($exception->getMessage(), 422);
         } catch (MockRequestException $exception) {
@@ -43,7 +43,7 @@ class TransactionRepository
         }
     }
 
-    private function checkMockTransactionAvailable(): bool
+    public function checkMockTransactionAvailable(): bool
     {
         return $this->mock_provider->enableOperation(
             config('MockTransaction.method'),
@@ -51,7 +51,7 @@ class TransactionRepository
         );
     }
 
-    private function checkPayerHasBalance(): bool
+    public function checkPayerHasBalance(): bool
     {
         $wallet_payer = Wallet::find($this->data->payer_wallet_id);
 
@@ -62,7 +62,7 @@ class TransactionRepository
         return true;
     }
 
-    private function makeTransaction(): Transaction
+    public function saveTransaction(): Transaction
     {
         return DB::transaction(function () {
             $transaction = new Transaction();

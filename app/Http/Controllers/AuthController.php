@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\AuthResource;
+use App\Repositories\AuthRepository;
+use App\Exceptions\Auth\AuthRepositoryException;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -15,17 +18,35 @@ class AuthController extends Controller
        'id' => 'required|max:255',
     ];
 
+    private $repository;
+
+    /**
+    * @var UserRepository
+    */
+    public function __construct(AuthRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     public function login(Request $request)
     {
         $this->validate($request, self::RULES);
 
-        $token = Auth::attempt($request->only(['id', 'password']));
+        try {
+            $fields = $request->only(['id', 'password']);
+            $token = $this->repository->makeLogin($fields);
 
-        if (!$token) {
-            return response()->json(['message' => 'Invalid id/password'], 401);
+            return response()->json(new AuthResource($token), 200);
+        } catch (AuthRepositoryException $exception) {
+            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
+        } catch (\Exception $exception) {
+            dd($exception);
+            Log::critical('[User error]', [
+                'message' => $exception->getMessage()
+            ]);
+
+            return response()->json(['message' => 'Login failed, please try again later!'], 500);
         }
-
-        return response()->json(new AuthResource($token), 200);
     }
 
     public function logout()

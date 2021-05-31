@@ -41,7 +41,7 @@ class TransactionController extends Controller
 
         try {
             $payload = (object) $request->only(['value', 'payee_wallet_id', 'payer_wallet_id']);
-            $transaction = $this->repository->handle($payload);
+            $transaction = $this->repository->makeTransaction($payload);
 
             return response()->json([
                 'transaction' => $transaction,

@@ -45,7 +45,7 @@ class UserController extends Controller
                 $fields->document = $request->input('cnpj');
             }
 
-            $user = $this->repository->handle($fields);
+            $user = $this->repository->saveUser($fields);
 
             return response()->json(['user' => new UserResource($user), 'message' => 'User created!'], 201);
         } catch (UserRepositoryException $exception) {
