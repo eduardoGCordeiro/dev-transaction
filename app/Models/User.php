@@ -81,6 +81,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
     }
 
+    public function createSpecialization($document_type)
+    {
+        if ($document_type === 'cpf') {
+            return $this->hasOne(PersonUser::class);
+        }
+
+        if ($document_type === 'cnpj') {
+            return $this->hasOne(CorporateUser::class);
+        }
+    }
+
     public function person()
     {
         return $this->hasOne(PersonUser::class);

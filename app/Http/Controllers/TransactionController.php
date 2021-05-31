@@ -12,11 +12,11 @@ use App\Exceptions\Transaction\TransactionRepositoryException;
 
 class TransactionController extends Controller
 {
+    private $repository;
+
     /**
     * @var TransactionRepository
     */
-    private $repository;
-
     public function __construct(TransactionRepository $repository)
     {
         $this->repository = $repository;

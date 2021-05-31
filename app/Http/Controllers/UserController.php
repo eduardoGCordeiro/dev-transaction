@@ -3,15 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Wallet;
-use App\Models\PersonUser;
-use App\Models\CorporateUser;
 use App\Http\Resources\UserResource;
-use App\Providers\MockRequestServiceProvider;
+use App\Exceptions\User\UserRepositoryException;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -25,46 +20,42 @@ class UserController extends Controller
         'cnpj' => 'required_if:document_type,cnpj|unique:corporate_users|size:14'
     ];
 
+    private $repository;
+
+    /**
+    * @var UserRepository
+    */
+    public function __construct(UserRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     public function register(Request $request)
     {
         $this->validate($request, self::RULES);
 
-        DB::beginTransaction();
-
         try {
-            $user = new User();
-            $user->name = $request->input('name');
-            $user->email = $request->input('email');
-            $user->password = Hash::make($request->input('password'));
-            $user->save();
+            $fields = (object) $request->only(['name', 'email', 'password', 'document_type']);
 
-            if ($request->input('document_type') === 'cpf') {
-                $specialization = new PersonUser();
-                $specialization->cpf = $request->input('cpf');
+            if ($request->input('cpf')) {
+                $fields->document = $request->input('cpf');
             }
 
-            if ($request->input('document_type') === 'cnpj') {
-                $specialization = new CorporateUser();
-                $specialization->cnpj = $request->input('cnpj');
+            if ($request->input('cnpj')) {
+                $fields->document = $request->input('cnpj');
             }
 
-            $specialization->user_id = $user->id;
-            $specialization->save();
+            $user = $this->repository->handle($fields);
 
-            $wallet = new Wallet();
-            $wallet->user_id = $user->id;
-            $wallet->save();
-
-            DB::commit();
             return response()->json(['user' => new UserResource($user), 'message' => 'User created!'], 201);
+        } catch (UserRepositoryException $exception) {
+            return response()->json(['message' => $exception->getMessage()], $exception->getCode());
         } catch (\Exception $exception) {
-            DB::rollBack();
-
             Log::critical('[User error]', [
                 'message' => $exception->getMessage()
             ]);
 
-            return response()->json(['message' => 'User Registration Failed!'], 500);
+            return response()->json(['message' => 'User Registration failed, please try again later!'], 500);
         }
     }
 }
