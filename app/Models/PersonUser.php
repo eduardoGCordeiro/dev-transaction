@@ -28,7 +28,8 @@ class PersonUser extends Model
      */
     protected $hidden = [
         'id',
-        'user_id'
+        'user_id',
+        'deleted_at'
     ];
 
     public function user()

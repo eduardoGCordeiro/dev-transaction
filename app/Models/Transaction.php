@@ -24,6 +24,15 @@ class Transaction extends Model
         'value',
     ];
 
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'deleted_at'
+    ];
+
     public static function boot()
     {
         parent::boot();

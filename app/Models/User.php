@@ -37,6 +37,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
+        'deleted_at'
     ];
 
     public static function boot()

@@ -31,6 +31,7 @@ class Wallet extends Model
      */
     protected $hidden = [
         'user_id',
+        'deleted_at'
     ];
 
     public static function boot()
@@ -44,5 +45,17 @@ class Wallet extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function debit($value)
+    {
+        $this->balance -= $value;
+        $this->save();
+    }
+
+    public function credit($value)
+    {
+        $this->balance += $value;
+        $this->save();
     }
 }
