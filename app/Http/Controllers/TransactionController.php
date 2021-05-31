@@ -54,7 +54,6 @@ class TransactionController extends Controller
                 'message' => $exception->getMessage()
             ]);
 
-            return response()->json(['message' => $exception->getMessage()], 500);
             return response()->json(['message' => 'The transaction failed, please try again later!'], 500);
         }
     }

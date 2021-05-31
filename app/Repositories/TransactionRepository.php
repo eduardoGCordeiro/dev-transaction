@@ -5,6 +5,7 @@ namespace App\Repositories;
 use Illuminate\Support\Facades\DB;
 use App\Models\Wallet;
 use App\Models\Transaction;
+use App\Events\SendTransactionSuccessfullyNotification;
 use App\Providers\MockRequestServiceProvider;
 use App\Exceptions\Transaction\TransactionException;
 use App\Exceptions\MockService\MockRequestException;
@@ -73,6 +74,8 @@ class TransactionRepository
 
             $transaction->payer->debit($this->data->value);
             $transaction->payee->credit($this->data->value);
+
+            event(new SendTransactionSuccessfullyNotification($transaction));
 
             return $transaction->unsetRelation('payer')->unsetRelation('payee');
         });
