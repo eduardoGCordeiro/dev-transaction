@@ -12,17 +12,17 @@ class AuthController extends Controller
 
     private const RULES = [
        'password' => 'required|string|max:255',
-       'email' => 'required|email|max:255',
+       'id' => 'required|max:255',
     ];
 
     public function login(Request $request)
     {
         $this->validate($request, self::RULES);
 
-        $token = Auth::attempt($request->only(['email', 'password']));
+        $token = Auth::attempt($request->only(['id', 'password']));
 
         if (!$token) {
-            return response()->json(['message' => 'Invalid email/password'], 401);
+            return response()->json(['message' => 'Invalid id/password'], 401);
         }
 
         return response()->json(new AuthResource($token), 200);
@@ -31,7 +31,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return response()->json(['message' => 'User successfully signed out'], 200);
+        return response()->json(['message' => 'Application successfully signed out'], 200);
     }
 
     public function refresh()
