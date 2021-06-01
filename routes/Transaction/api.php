@@ -5,5 +5,5 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'transaction',
 ], function () {
-    Route::post('/outcome', 'TransactionController@outcome');
+    Route::post('/', 'TransactionController@createTransaction');
 });

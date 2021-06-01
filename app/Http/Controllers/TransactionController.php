@@ -22,7 +22,7 @@ class TransactionController extends Controller
         $this->repository = $repository;
     }
 
-    public function outcome(Request $request)
+    public function createTransaction(Request $request)
     {
         $this->validate($request, [
             'value' => [
