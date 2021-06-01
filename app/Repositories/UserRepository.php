@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Exceptions\User\UserException;
 use App\Exceptions\User\UserRepositoryException;
+use Ramsey\Uuid\Uuid;
 
 class UserRepository
 {
@@ -27,7 +28,6 @@ class UserRepository
                 $user->createSpecialization($this->data->document_type)->create([
                     $this->data->document_type => $this->data->document
                 ]);
-                $user->wallet()->create([]);
 
                 return $user;
             });

@@ -3,17 +3,17 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use App\Models\CorporateUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
-class CorporateUserFactory extends Factory
+class UserFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = CorporateUser::class;
+    protected $model = User::class;
 
     /**
      * Define the model's default state.
@@ -23,10 +23,9 @@ class CorporateUserFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => function () {
-                return User::factory()->create()->id;
-            },
-            'cnpj' => $this->faker->unique()->regexify('[0-9]{14}')
+            'name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
+            'password' => Hash::make('dev-transaction')
         ];
     }
 }

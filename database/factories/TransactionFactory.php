@@ -2,18 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
-use App\Models\CorporateUser;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CorporateUserFactory extends Factory
+class TransactionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = CorporateUser::class;
+    protected $model = Transaction::class;
 
     /**
      * Define the model's default state.
@@ -23,10 +22,7 @@ class CorporateUserFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => function () {
-                return User::factory()->create()->id;
-            },
-            'cnpj' => $this->faker->unique()->regexify('[0-9]{14}')
+            'value' => $this->faker->numerify(),
         ];
     }
 }

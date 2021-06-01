@@ -43,8 +43,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public static function boot()
     {
         parent::boot();
+
         self::creating(function ($model) {
             $model->id = Uuid::uuid4();
+        });
+
+        self::created(function ($model) {
+            $model->wallet()->create([]);
         });
     }
 

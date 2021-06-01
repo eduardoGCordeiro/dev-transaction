@@ -28,6 +28,7 @@ class TransactionController extends Controller
             'value' => [
                 'required',
                 'numeric',
+                'min: 0.01',
                 new CheckBalancePayer($request->all())
             ],
             'payee_wallet_id' => 'required|max:255|exists:wallets,id',
