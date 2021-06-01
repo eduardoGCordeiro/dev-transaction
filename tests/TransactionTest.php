@@ -49,6 +49,8 @@ class TransactionTest extends TestCase
         $application = Application::factory()->create();
         $payer = PersonUser::factory()->create();
 
+        $payer->user->wallet->credit(100);
+
         $payload = [
             'value' => 100,
             'payer_wallet_id' => 'string-simulation-uuid-wallet-payer',
@@ -82,6 +84,8 @@ class TransactionTest extends TestCase
         $payer = PersonUser::factory()->create();
         $payee = CorporateUser::factory()->create();
 
+        $payer->user->wallet->credit(100);
+
         $payload = [
             'value' => 100,
             'payer_wallet_id' => $payee->user->wallet->id,
@@ -93,7 +97,44 @@ class TransactionTest extends TestCase
         $request->assertResponseStatus(422);
     }
 
-    public function testeInsufficientValutToMakeTransaction()
+    public function testePayerWalletAndPayeeWalletSameWallet()
+    {
+        $application = Application::factory()->create();
+        $payer = PersonUser::factory()->create();
+
+        $payer->user->wallet->credit(100);
+
+        $payload = [
+            'value' => 100,
+            'payer_wallet_id' => $payer->user->wallet->id,
+            'payee_wallet_id' => $payer->user->wallet->id
+        ];
+
+        $request = $this->actingAs($application)->post(route('createTransaction'), $payload);
+
+        $request->assertResponseStatus(422);
+    }
+
+    public function testePayeeAndPayerIsUsers()
+    {
+        $application = Application::factory()->create();
+        $payer = PersonUser::factory()->create();
+        $payee = PersonUser::factory()->create();
+
+        $payer->user->wallet->credit(100);
+
+        $payload = [
+            'value' => 100,
+            'payer_wallet_id' => $payer->user->wallet->id,
+            'payee_wallet_id' => $payee->user->wallet->id
+        ];
+
+        $request = $this->actingAs($application)->post(route('createTransaction'), $payload);
+
+        $request->assertResponseStatus(200);
+    }
+
+    public function testePayeeInsufficientValueToMakeTransaction()
     {
         $application = Application::factory()->create();
         $payer = PersonUser::factory()->create();
@@ -101,8 +142,8 @@ class TransactionTest extends TestCase
 
         $payload = [
             'value' => 100,
-            'payer_wallet_id' => $payee->user->wallet->id,
-            'payee_wallet_id' => $payer->user->wallet->id
+            'payer_wallet_id' => $payer->user->wallet->id,
+            'payee_wallet_id' => $payee->user->wallet->id
         ];
 
         $request = $this->actingAs($application)->post(route('createTransaction'), $payload);
@@ -127,5 +168,34 @@ class TransactionTest extends TestCase
         $request = $this->actingAs($application)->post(route('createTransaction'), $payload);
 
         $request->assertResponseStatus(200);
+    }
+
+    public function testeSuccessTransactionCreditAndDebitCorrectValues()
+    {
+        $application = Application::factory()->create();
+        $payer = PersonUser::factory()->create();
+        $payee = CorporateUser::factory()->create();
+
+        $payer->user->wallet->credit(1000);
+
+        $payload = [
+            'value' => 573.1,
+            'payer_wallet_id' => $payer->user->wallet->id,
+            'payee_wallet_id' => $payee->user->wallet->id
+        ];
+
+        $request = $this->actingAs($application)->post(route('createTransaction'), $payload);
+
+        $request->assertResponseStatus(200);
+
+        $request->seeInDatabase('wallets', [
+            'id' => $payer->user->wallet->id,
+            'balance' => 426.9
+        ]);
+
+        $request->seeInDatabase('wallets', [
+            'id' => $payee->user->wallet->id,
+            'balance' => 573.1
+        ]);
     }
 }
