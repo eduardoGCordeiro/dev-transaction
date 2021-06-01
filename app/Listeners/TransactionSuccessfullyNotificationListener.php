@@ -34,6 +34,10 @@ class TransactionSuccessfullyNotificationListener
                 config('MockEmail.method'),
                 config('MockEmail.url')
             );
+
+            Log::critical('[Notification send]', [
+                'transaction' => $event->transaction
+            ]);
         } catch (MockRequestException $exception) {
             Log::critical('[Transaction notification error]', [
                 'message' => $exception->getMessage(),
