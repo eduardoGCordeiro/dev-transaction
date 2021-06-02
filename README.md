@@ -9,21 +9,23 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
 
 # Rotas
 
-### Unauthorized API's
+### Rotas sem autorização
   
   - POST /api/application/register
 
       Payload:
+
         {
             "name": "string",
             "password": "string"
         }
   
-### Login
+### Rota de Login
   
   - POST /api/auth/login
   
       Payload:
+
         {
             {
                 "password": "string",
@@ -32,15 +34,18 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
         }
 
 
-### Authorized API's
+### Rotas com autorização
 
-    - Header de exemplo
+    - Header de exemplo:
+
         {
             {"key":"Content-Type","value":"application/json","description":"","type":"text","enabled":true},
             {"key":"Accept","value":"application/json","description":"","type":"text","enabled":true},
             {"key":"Authorization","value":"bearer token-retornado","description":"","type":"text","enabled":true}
         }
   
+
+
       - Na chave Authorization no lugar do token-retornado deve ser inserido o token retornado na resposta da api de login. Este token deve ser enviado em todas as rotas authorized.
 
   - GET /api/auth/refresh
@@ -50,6 +55,7 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
   - POST /api/user/register
 
       Payload:
+
           {
               "name": "string",
               "password": "string",
@@ -63,6 +69,7 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
   - POST /api/transaction
 
       Payload:
+
           {
               "value": numeric,
               "payer_wallet_id": "string",
