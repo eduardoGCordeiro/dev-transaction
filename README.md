@@ -1,24 +1,83 @@
-# Lumen PHP Framework
+# Dev-transaction API-RESTFULL
+Aplicação que simula transações entre usuários. Para instalar a aplicação é necessário que você tenha os pré requisitos:
+- docker
+- docker-compose
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://img.shields.io/packagist/v/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://img.shields.io/packagist/l/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
+Para utilizar, digite o seguinte comando na pasta download do projeto:
+    docker-compose up -d
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+# Rotas
+  # Unauthorized API's
+  
+  - POST /api/application/register
 
-## Official Documentation
+      Body:
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+        {
+            "name": "string",
+            "password": "string"
+        }
+  
+  # Login
+  
+  - POST /api/auth/login
+  
+      Body:
 
-## Contributing
+        {
+            {
+                "password": "string",
+                "id": "string"
+            }
+        }
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+  # Header example
+    - Header enviado após efetuar o login:
 
-## Security Vulnerabilities
+      [
+          {"key":"Content-Type","value":"application/json","description":"","type":"text","enabled":true},
+          {"key":"Accept","value":"application/json","description":"","type":"text","enabled":true},
+          {"key":"Authorization","value":"bearer token-retornado","description":"","type":"text","enabled":true}
+      ]
+  
+      Na chave Authorization no lugar do token-retornado deve ser inserido o token retornado na resposta da api de login. Este token deve ser enviado em todas as rotas authorized.
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+  # Authorized API's
 
-## License
+  - GET /api/auth/refresh
 
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+  - POST /api/auth/logout
+
+      Body:
+
+      {}
+
+  - POST /api/user/register
+
+      Body:
+
+          {
+              "name": "string",
+              "password": "string",
+              "email": "string",
+              "document_type": "cpf" ou "cnpj",
+              "cpf": "string"
+          }
+
+      O campo document_type define o tipo de usuário que será cadastrado, se for utilizado o cpf será cadastrado um usuário pessoa física e com o cnpj será cadastrado um usuário pessoa jurídica.
+
+  - POST /api/transaction
+
+      Body:
+
+          {
+              "value": numeric,
+              "payer_wallet_id": "string",
+              "payee_wallet_id": "string"
+          }
+
+
+
+
+
+
