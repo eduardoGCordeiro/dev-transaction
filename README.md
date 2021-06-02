@@ -7,7 +7,7 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
     docker-compose up -d
 
 # Rotas
-  # Unauthorized API's
+  ## Unauthorized API's
   
   - POST /api/application/register
 
@@ -18,7 +18,7 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
             "password": "string"
         }
   
-  # Login
+  ## Login
   
   - POST /api/auth/login
   
@@ -31,18 +31,18 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
             }
         }
 
-  # Header example
-    - Header enviado após efetuar o login:
+  ## Header example
+    - Header enviado após efetuar o login
 
-      [
-          {"key":"Content-Type","value":"application/json","description":"","type":"text","enabled":true},
-          {"key":"Accept","value":"application/json","description":"","type":"text","enabled":true},
-          {"key":"Authorization","value":"bearer token-retornado","description":"","type":"text","enabled":true}
-      ]
+        [
+            {"key":"Content-Type","value":"application/json","description":"","type":"text","enabled":true},
+            {"key":"Accept","value":"application/json","description":"","type":"text","enabled":true},
+            {"key":"Authorization","value":"bearer token-retornado","description":"","type":"text","enabled":true}
+        ]
   
       Na chave Authorization no lugar do token-retornado deve ser inserido o token retornado na resposta da api de login. Este token deve ser enviado em todas as rotas authorized.
 
-  # Authorized API's
+  ## Authorized API's
 
   - GET /api/auth/refresh
 
@@ -50,7 +50,9 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
 
       Body:
 
-      {}
+        {
+
+        }
 
   - POST /api/user/register
 
