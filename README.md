@@ -4,26 +4,26 @@ Aplicação que simula transações entre usuários. Para instalar a aplicação
 - docker-compose
 
 Para utilizar, digite o seguinte comando na pasta download do projeto:
-    docker-compose up -d
+
+    $ docker-compose up -d
 
 # Rotas
-  ## Unauthorized API's
+
+### Unauthorized API's
   
   - POST /api/application/register
 
-      Body:
-
+      Payload:
         {
             "name": "string",
             "password": "string"
         }
   
-  ## Login
+### Login
   
   - POST /api/auth/login
   
-      Body:
-
+      Payload:
         {
             {
                 "password": "string",
@@ -31,33 +31,25 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
             }
         }
 
-  ## Header example
-    - Header enviado após efetuar o login
 
-        [
+### Authorized API's
+
+    - Header de exemplo
+        {
             {"key":"Content-Type","value":"application/json","description":"","type":"text","enabled":true},
             {"key":"Accept","value":"application/json","description":"","type":"text","enabled":true},
             {"key":"Authorization","value":"bearer token-retornado","description":"","type":"text","enabled":true}
-        ]
+        }
   
-      Na chave Authorization no lugar do token-retornado deve ser inserido o token retornado na resposta da api de login. Este token deve ser enviado em todas as rotas authorized.
-
-  ## Authorized API's
+      - Na chave Authorization no lugar do token-retornado deve ser inserido o token retornado na resposta da api de login. Este token deve ser enviado em todas as rotas authorized.
 
   - GET /api/auth/refresh
 
   - POST /api/auth/logout
 
-      Body:
-
-        {
-
-        }
-
   - POST /api/user/register
 
-      Body:
-
+      Payload:
           {
               "name": "string",
               "password": "string",
@@ -70,8 +62,7 @@ Para utilizar, digite o seguinte comando na pasta download do projeto:
 
   - POST /api/transaction
 
-      Body:
-
+      Payload:
           {
               "value": numeric,
               "payer_wallet_id": "string",
